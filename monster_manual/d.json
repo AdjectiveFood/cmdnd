@@ -1,0 +1,124 @@
+{
+    "dragon_adult_black": {
+        "default_name": "Adult Black Dragon",
+        "stat_block": {
+            "strength": 23,
+            "dexterity": 14,
+            "constitution": 21,
+            "intelligence": 14,
+            "wisdom": 13,
+            "charisma": 17
+        },
+        "ref": {
+            "book": "monster manual",
+            "page": 155
+        },
+        "saving_throw_proficiency": [
+            "dexterity", "constitution", "wisdom", "charisma"
+        ],
+        "senses": {
+            "blindsight": 60,
+            "darkvision": 120
+        },
+        "languages": ["draconic", "common"],
+        "ac": 19,
+        "hit_point": {
+            "default": 195,
+            "random": "17d12 + 85"
+        },
+        "speed": {
+            "ground": 40,
+            "fly": 80,
+            "swim": 40
+        },
+        "skills": {
+            "proficiency": [
+                "stealth"
+            ],
+            "expertise": [
+                "perception"
+            ]
+        },
+        "immunities": [
+            "acid"
+        ],
+        "challenge": 14,
+        "special_abilities": {
+            "amphibious": "The dragon can breathe air and water",
+            "legendary resistance (3/day)": "If the dragon fails a saving throw, it can choose to succeed instead."
+        },
+        "actions": {
+            "multiattack": {
+                "description": "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
+            },
+            "bite": {
+                "to_hit": 11,
+                "damage": "2d10 + 6",
+                "damage_type": ["piercing"]
+            },
+            "claw": {
+                "to_hit": 11,
+                "damage": "2d6 + 6",
+                "damage_type": ["slashing"]
+            },
+            "tail": {
+                "to_hit": 11,
+                "damage": "2d8 + 6",
+                "damage_type": ["bludgeoning"]
+            },
+            "Frightful Presence": {
+                "save": {
+                    "dc": 16,
+                    "ability": "wisdom",
+                    "fail": {
+                        "duration": "1 minute",
+                        "condition": "frightened"
+                    },
+                    "pass": {
+                        "description": "Immune to Frightful Presence for 20 hours"
+                    }
+                }
+            },
+            "Acid Breath": {
+                "range": "60ft line that is 5 feet wide",
+                "recharge": [5, 6],
+                "save": {
+                    "dc": 18,
+                    "ability": "dexterity",
+                    "fail": {
+                        "damage": "12d8",
+                        "damage_type": ["acid"]
+                    },
+                    "pass": {
+                        "description": "half damage"
+                    }
+                }
+            }
+        },
+        "legendary action": {
+            "use": 3,
+            "actions": {
+                "detect": {
+                    "description": "the dragon makes a perception check"
+                },
+                "tail attack": {
+                    "description": "the dragon makes a tail attack"
+                },
+                "wing attack": {
+                    "cost": 2,
+                    "range": "10 feat around",
+                    "save": {
+                        "dc": 19,
+                        "ability": "dexterity",
+                        "fail": {
+                            "damage": "2d6 + 6",
+                            "damage_type": "bludgeoning",
+                            "condition": "prone",
+                            "description": "the dragon can then fly up half its flying speed"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

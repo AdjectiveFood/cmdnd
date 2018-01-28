@@ -1,0 +1,103 @@
+{
+    "goblin": {
+        "ref": {
+            "book": "monster manual",
+            "page": 166
+        },
+        "stat_block": {
+            "strength": 8,
+            "dexterity": 14,
+            "constitution": 10,
+            "intelligence": 10,
+            "wisdom": 8,
+            "charisma": 8
+        },
+        "senses": {
+            "darkvision": 60
+        },
+        "languages": ["goblin, common"],
+        "ac": 15,
+        "hit_point": {
+            "default": 7,
+            "random": "2d6"
+        },
+        "speed": {
+            "ground": 30
+        },
+        "skills": {
+            "proficiency": [
+                "stealth"
+            ]
+        },
+        "challenge": 0.25,
+        "special_abilities": {
+            "Nimble Escape": "The goblin can take the Disengage or Hide action as a bonus action on each of its turns"
+        },
+        "actions": {
+            "scimitar": {
+                "to_hit": 4,
+                "damage": "1d6 + 2",
+                "damage_type": ["slashing"]
+            },
+            "shortbow": {
+                "to_hit": 4,
+                "damage": "1d6 + 2",
+                "range": 80,
+                "extended_range": 320,
+                "damage_type": ["piercing"]
+            }
+        }
+    },
+    "giant_hill": {
+        "default_name": "Hill Giant",
+        "ref": {
+            "book": "monster manual",
+            "page": 155
+        },
+        "stat_block": {
+            "strength": 21,
+            "dexterity": 8,
+            "constitution": 19,
+            "intelligence": 5,
+            "wisdom": 9,
+            "charisma": 6
+        },
+        "senses": {
+        },
+        "languages": ["giant"],
+        "ac": 13,
+        "hit_point": {
+            "default": 105,
+            "random": "10d12 + 40"
+        },
+        "speed": {
+            "ground": 40
+        },
+        "skills": {
+            "proficiency": [
+                "perception"
+            ]
+        },
+        "challenge": 5,
+        "special_abilities": {
+        },
+        "actions": {
+            "multiattack": {
+                "description": "The giant makes two greatclub attack"
+            },
+            "greatclub": {
+                "to_hit": 8,
+                "damage": "3d10 +5",
+                "range": 10,
+                "damage_type": ["bludgeoning"]
+            },
+            "rock": {
+                "to_hit": 8,
+                "damage": "3d10 + 5",
+                "range": 60,
+                "extended_range": 240,
+                "damage_type": ["bludgeoning"]
+            }
+        }
+    }
+}
