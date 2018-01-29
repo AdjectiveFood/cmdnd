@@ -1,8 +1,9 @@
-from .dice import d, d_str, d20
+from dnd_core.dice import d, d_str, d20
 import json
 import os
-from .const_data import *
-from .action import Action
+from dnd_core.const_data import *
+from dnd_core.action import Action
+from dnd_core.display.utils import *
 
 # TODO: attack bonus have finesse if the str is under 10. See mastiff vs raven
 # PC ids must start with the PC_TOKEN const
@@ -51,11 +52,18 @@ class CharacterLoader:
         name = name if name is not None else ' '.join([w.capitalize() for w in default_name.replace('_', ' ').split(' ')])
         return Character(name, template, m_id)
 
-    def loadMonsterFromEncounter(encounter_data):
-        character = load(encounter_data['template_file'], encounter_data['template_id'], encounter_data['name'])
+    def loadMonsterFromEncounter(self, encounter_data):
+        character = loadMonster(encounter_data['template_id'], encounter_data['name'])
         character.max_hp = encounter_data['max_hp']
         character.cur_hp = encounter_data['cur_hp']
         character.tmp_hp = encounter_data['tmp_hp']
+
+
+    def loadPc(self, pc_filename):
+        with open(pc_filename) as pc_file:
+            for pc_name, pc_stats in json.load(pc_file):
+                pc_id = PC_TOKEN + pc_name
+                Character(pc_name, pc_stats, pc_id, False)
 
 
 class Character:
@@ -87,6 +95,7 @@ class Character:
                 else:
                     self.saving_throw[ability] += self.proficiency() + statModifier(self.abilities[ability])
 
+        self.condition_immunities = template['condition_immunities'] if 'condition_immunities' in template else []
         self.immunities = template['immunities'] if 'immunities' in template else []
         self.resistances = template['resistances'] if 'resistances' in template else []
 
@@ -168,38 +177,39 @@ class Character:
         return result
 
     def __str__(self):
-        seperator = ''.join('-' for i in range(80))
         string = [
-            seperator,
             self.name,
             self.template_id + (' ' + self.reference if self.reference is not None else ''),
-            seperator,
+            SEPARATOR,
             'Armor Class: {}'.format(self.ac),
             'Hit Points: {}/{} ({})'.format(self.cur_hp, self.max_hp, self.random_hp_str),
             'Speed: {}'.format(', '.join(['({}: {}ft)'.format(i, j) for i, j in self.speed.items()])),
-            seperator,
-            ' STR\t DEX\t CON\t INT\t WIS\t CHA',
-            '\t'.join(['{} ({})'.format(*(self.abilities[a], statModifier(self.abilities[a]))) for a in ABILITIES]),
-            seperator,
+            SEPARATOR,
+            '   STR          DEX          CON          INT          WIS          CHA',
+            '  ' + '       '.join(['{} ({})'.format(*(self.abilities[a], statModifier(self.abilities[a]))) for a in ABILITIES]),
+            SEPARATOR,
             ('Saving Throws: ' + ', '.join(['{} {}'.format(s.capitalize(), b) for s, b in self.saving_throw.items() if b > 0])),
-            ('Skills: ' + ', '.join(['{} {}'.format(sn.capitalize(), self.skillMod(sn)) for sn in self.skills['proficiency'] + self.skills['expertise']])),
+            ('Skills: ' + ', '.join(['{} {}'.format(sn.capitalize(), self.skillMod(sn)) for sn in self.skills['proficiency'] + self.skills['expertise']])) if len(self.skills['proficiency'] + self.skills['expertise']) > 0 else '',
+            ('Condition Immunities: ' + ', '.join(self.condition_immunities)) if len(self.condition_immunities) > 0 else '',
             ('Damage Immunities: ' + ', '.join(self.immunities)) if len(self.immunities) > 0 else '',
             ('Damage Resistances: ' + ', '.join(self.resistances)) if len(self.resistances) > 0 else '',
             'Senses: Passive Perception {}, {}'.format(self.passivePerception(), ', '.join(['({}: {}ft)'.format(i, j) for i, j in self.senses.items()])),
             'Languages: ' + ', '.join(self.languages),
             'Challenge: {} ({}xp)'.format(self.challenge, self.xpValue()),
-            seperator,
+            SEPARATOR if len(self.special_abilities.items()) > 0 else '',
+            'Special Abilities' if len(self.special_abilities.items()) > 0 else '',
+            SEPARATOR if len(self.special_abilities.items()) > 0 else '',
             '\n'.join([name.capitalize() + ': ' + desc for name, desc in self.special_abilities.items()]),
-            seperator,
+            SEPARATOR,
+            'Actions',
+            SEPARATOR,
             '\n'.join([str(a) for a in self.actions])
         ]
 
         string = [s for s in string if len(s) > 0]
-
-        return '\n'.join(string)
+        return '\n'.join(boxStrings(string))
 
     def toEncounterDict(self):
-        # TODO: link to template
         return {
             "template_id": self.template_id,
             "name": self.name,
